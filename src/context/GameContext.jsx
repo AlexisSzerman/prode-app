@@ -10,6 +10,7 @@ export function GameProvider({ children }) {
   const [predictions, setPredictions] = useState([]);
   const [players, setPlayers] = useState([]);
   const [scores, setScores] = useState({});
+  const [gameFinished, setGameFinished] = useState(false);
 
   // Función para calcular los scores
   const calculateScores = (preds, pls) => {
@@ -31,6 +32,7 @@ export function GameProvider({ children }) {
         setPredictions(data.predictions || []);
         setPlayers(data.players || []);
         setScores(data.scores || {});
+        setGameFinished(data.gameFinished || false);
       }
     });
 
@@ -41,7 +43,7 @@ export function GameProvider({ children }) {
   useEffect(() => {
     const newScores = calculateScores(predictions, players);
     setScores(newScores);
-    updateGameData({ predictions, players, scores: newScores });
+    updateGameData({ predictions, players, scores: newScores, gameFinished });
     // eslint-disable-next-line
   }, [predictions, players]);
 
@@ -55,7 +57,7 @@ export function GameProvider({ children }) {
   const addPrediction = async (text, points = 1) => {
     const updated = [...predictions, { text: text.trim(), correct: false, points }];
     setPredictions(updated);
-    await updateGameData({ predictions: updated, players, scores });
+    await updateGameData({ predictions: updated, players, scores, gameFinished });
   };
 
   const updatePredictionPoints = async (index, points) => {
@@ -63,7 +65,7 @@ export function GameProvider({ children }) {
       i === index ? { ...p, points } : p
     );
     setPredictions(updated);
-    await updateGameData({ predictions: updated, players, scores });
+    await updateGameData({ predictions: updated, players, scores, gameFinished });
   };
 
   const toggleCorrect = async (index) => {
@@ -71,7 +73,7 @@ export function GameProvider({ children }) {
       i === index ? { ...p, correct: !p.correct } : p
     );
     setPredictions(updated);
-    await updateGameData({ predictions: updated, players });
+    await updateGameData({ predictions: updated, players, scores, gameFinished });
   };
 
   const confirmPlayerChoices = async (nickname, selected) => {
@@ -80,20 +82,26 @@ export function GameProvider({ children }) {
 
     const updated = [...players, { nickname, selected }];
     setPlayers(updated);
-    await updateGameData({ predictions, players: updated });
+    await updateGameData({ predictions, players: updated, scores, gameFinished });
   };
 
   const resetRound = async () => {
     const clearedPredictions = predictions.map(p => ({ ...p, correct: false }));
     setPredictions(clearedPredictions);
     setPlayers([]);
-    await updateGameData({ predictions: clearedPredictions, players: [] });
+    setGameFinished(false);
+    await updateGameData({ predictions: clearedPredictions, players: [], scores: {}, gameFinished: false });
+  };
+
+  const finishGame = async () => {
+    setGameFinished(true);
+    await updateGameData({ predictions, players, scores, gameFinished: true });
   };
 
   const removePrediction = async (index) => {
     const updated = predictions.filter((_, i) => i !== index);
     setPredictions(updated);
-    await updateGameData({ predictions: updated, players, scores });
+    await updateGameData({ predictions: updated, players, scores, gameFinished });
   };
 
   return (
@@ -101,11 +109,13 @@ export function GameProvider({ children }) {
       predictions,
       players,
       scores,
+      gameFinished,
       addPrediction,
       updatePredictionPoints,
       toggleCorrect,
       confirmPlayerChoices,
       resetRound,
+      finishGame,
       removePrediction,
     }}>
       {children}
@@ -114,3 +124,4 @@ export function GameProvider({ children }) {
 }
 
 export const useGame = () => useContext(GameContext);
+

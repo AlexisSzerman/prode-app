@@ -12,7 +12,8 @@ export default function ModeratorPanel() {
     players,
     scores,
     resetRound,
-    removePrediction
+    removePrediction,
+    finishGame,
   } = useGame();
 
   const [newPrediction, setNewPrediction] = useState('');
@@ -51,7 +52,7 @@ export default function ModeratorPanel() {
   }
 
   return (
-<div className="min-h-screen py-8 px-4" style={{ backgroundColor: '#fff7db' }}>
+  <div className="min-h-screen py-8 px-4" style={{ backgroundColor: '#fff7db' }}>
     <div className="max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-4 font-gamer">Panel de Moderador</h1>
 
@@ -122,7 +123,7 @@ export default function ModeratorPanel() {
         ))}
       </ul>
 
-      <h2 className="text-xl font-semibold mb-2 font-gamer">Apuestas acertadas por jugadores</h2>
+      <h2 className="text-xl font-semibold mb-2 font-gamer">Apuestas acertadas</h2>
       <ul className="space-y-2">
         {players.map((p, i) => {
           const aciertos = p.selected.filter((idx) => predictions[idx]?.correct);
@@ -146,7 +147,7 @@ export default function ModeratorPanel() {
         })}
       </ul>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2 font-gamer">Leaderboard</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2 font-gamer">Posiciones</h2>
       <ul className="space-y-1">
         {Object.entries(scores)
           .sort(([, a], [, b]) => b - a)
@@ -165,13 +166,21 @@ export default function ModeratorPanel() {
           })}
       </ul>
 
-      <button
-        onClick={resetRound}
-        className="mt-6 bg-red-600 text-white px-4 py-2 rounded"
-      >
-        Reiniciar Ronda
-      </button>
+      <div className="mt-6 flex flex-col sm:flex-row gap-2">
+        <button
+          onClick={resetRound}
+          className="bg-red-600 text-white px-4 py-2 rounded"
+        >
+          Reiniciar Puntajes
+        </button>
+        <button
+          onClick={() => finishGame()}
+          className="bg-black text-white px-4 py-2 rounded"
+        >
+          Finalizar Partida
+        </button>
+      </div>
     </div>
-    </div>
-  );
+  </div>
+);
 }

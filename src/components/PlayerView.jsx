@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useGame } from '../context/GameContext';
 
 export default function PlayerView({ nickname }) {
-  const { predictions, confirmPlayerChoices, scores } = useGame();
+  const { predictions, confirmPlayerChoices, scores, gameFinished } = useGame();
   const [selected, setSelected] = useState([]);
   const [confirmed, setConfirmed] = useState(false);
 
@@ -29,57 +29,112 @@ export default function PlayerView({ nickname }) {
   };
 
   return (
+    <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center p-4"
+      style={{ backgroundColor: "#fff7db" }}>
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Bienvenido, {nickname}</h1>
+      <h1 className="text-2xl font-bold mb-4 font-gamer">Player {nickname} is <span className="text-green-500">online</span></h1>
 
       {confirmed ? (
-        <>
-          <h2 className="text-xl mb-2">Tus Apuestas Acertadas</h2>
+        (() => {
+          const acertadas = selected.filter((i) => predictions[i]?.correct);
+          const sortedScores = Object.entries(scores).sort(([, a], [, b]) => b - a);
+          const [winnerName, winnerScore] = sortedScores[0] || [];
 
-          {selected.filter((i) => predictions[i]?.correct).length > 0 ? (
-            <ul className="space-y-2">
-              {selected
-                .filter((i) => predictions[i]?.correct)
-                .map((i) => (
-                  <li key={i} className="p-2 border rounded flex justify-between items-center bg-green-50">
-                    <span>
-                      {predictions[i].text}{' '}
-                      <span className="text-xs text-gray-500">({predictions[i].points || 1} pts)</span>
-                    </span>
-                    <span className="text-green-600 font-bold">✓ +{predictions[i].points || 1}</span>
-                  </li>
-                ))}
-            </ul>
-          ) : (
-            <p className="text-red-600 font-semibold mb-4">No acertaste ninguna predicción esta vez.</p>
-          )}
+          if (!gameFinished) {
+            if (acertadas.length === 0) {
+              return (
+                <div className="flex flex-col items-center justify-center py-8">
+                  <svg
+                    className="animate-spin h-8 w-8 text-blue-600 mb-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8H4z"
+                    ></path>
+                  </svg>
+                  <p className="text-lg font-semibold text-gray-700">Partida en curso...</p>
+                </div>
+              );
+            }
 
-          <h3 className="mt-4 text-lg">
-            Puntaje total: <strong>{scores[nickname] ?? 0}</strong>
-          </h3>
+            return (
+              <>
+                <h2 className="text-xl mb-2">Tus Apuestas Acertadas</h2>
+                <ul className="space-y-2">
+                  {acertadas.map((i) => (
+                    <li
+                      key={i}
+                      className="p-2 border rounded flex justify-between items-center bg-green-50"
+                    >
+                      <span>
+                        {predictions[i].text}{' '}
+                        <span className="text-xs text-gray-500">
+                          ({predictions[i].points || 1} pts)
+                        </span>
+                      </span>
+                      <span className="text-green-600 font-bold">
+                        ✓ +{predictions[i].points || 1}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
 
-          <h2 className="text-xl font-semibold mt-6 mb-2">Leaderboard</h2>
-          <ul className="space-y-1">
-            {Object.entries(scores)
-              .sort(([, a], [, b]) => b - a)
-              .map(([nick, score], idx) => {
-                const medals = ['🥇', '🥈', '🥉'];
-                const bgColor = idx === 0 ? 'bg-yellow-100' : idx === 1 ? 'bg-gray-200' : idx === 2 ? 'bg-orange-100' : '';
-                return (
-                  <li key={nick} className={`border p-2 rounded flex justify-between items-center ${bgColor}`}>
-                    <div className="flex items-center gap-2">
-                      {medals[idx] && <span>{medals[idx]}</span>}
-                      <span>{nick}</span>
-                    </div>
-                    <span className="font-bold">{score} pts</span>
-                  </li>
-                );
-              })}
-          </ul>
-        </>
+                <h2 className="text-xl font-semibold mt-6 mb-2">Posiciones</h2>
+                <ul className="space-y-1">
+                  {sortedScores.map(([nick, score], idx) => {
+                    const medals = ['🥇', '🥈', '🥉'];
+                    const bgColor =
+                      idx === 0
+                        ? 'bg-yellow-100'
+                        : idx === 1
+                        ? 'bg-gray-200'
+                        : idx === 2
+                        ? 'bg-orange-100'
+                        : '';
+                    return (
+                      <li
+                        key={nick}
+                        className={`border p-2 rounded flex justify-between items-center ${bgColor}`}
+                      >
+                        <div className="flex items-center gap-2">
+                          {medals[idx] && <span>{medals[idx]}</span>}
+                          <span>{nick}</span>
+                        </div>
+                        <span className="font-bold">{score} pts</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            );
+          }
+
+          return (
+            <div className="flex flex-col items-center py-8">
+              <p className="text-3xl font-gamer text-red-600 mb-4">GAME OVER</p>
+              {winnerName && (
+                <p className="text-lg font-semibold text-green-700">
+                  🏆 Ganador: {winnerName} ({winnerScore} pts)
+                </p>
+              )}
+            </div>
+          );
+        })()
       ) : (
         <>
-          <p className="mb-2">Selecciona hasta {MAX_SELECTIONS} predicciones que creés que van a pasar:</p>
+          <p className="mb-2">Selecciona hasta {MAX_SELECTIONS} predicciones que creés que van a suceder:</p>
           <p className="text-sm text-gray-600 mb-2">
             Elegiste {selected.length} de {MAX_SELECTIONS} predicciones
           </p>
@@ -101,13 +156,14 @@ export default function PlayerView({ nickname }) {
             className={`mt-4 px-4 py-2 rounded text-white ${
               selected.length === 0
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
+                : ' bg-[#1e2c45] hover:bg-[#263956]'
             }`}
           >
             Confirmar Apuestas
           </button>
         </>
       )}
+    </div>
     </div>
   );
 }
