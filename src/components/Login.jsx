@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import logo3D from '../assets/logo-3d.png';
 
 export default function Login({ onLogin }) {
   const [nickname, setNickname] = useState('');
@@ -11,7 +12,7 @@ export default function Login({ onLogin }) {
       {/* Imagen */}
       <div className="mb-6 lg:mb-0 lg:mr-8">
         <img
-          src="/src/assets/logo-3d.png"
+          src={logo3D}
           alt="Prode icono"
           className="w-32 h-32 lg:w-80 lg:h-80"
         />
