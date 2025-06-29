@@ -23,14 +23,14 @@ export default function ModeratorPanel() {
 
   if (!authenticated) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <h1 className="text-2xl font-bold mb-4">Acceso Moderador</h1>
+      <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: '#fff7db' }}>
+        <h1 className="text-2xl font-bold mb-4 font-gamer">Acceso Moderador</h1>
         <input
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           placeholder="Contraseña"
-          className="border p-2 mb-2 rounded"
+          className="border p-2 mb-4 rounded"
         />
         <button
           onClick={() => {
@@ -41,7 +41,7 @@ export default function ModeratorPanel() {
               setError('Contraseña incorrecta');
             }
           }}
-          className="bg-blue-600 text-white px-4 py-2 rounded mb-2"
+          className="bg-[#3aae5f] hover:bg-green-700 font-gamer text-white px-4 py-2 rounded mb-2 "
         >
           Entrar
         </button>
@@ -51,15 +51,16 @@ export default function ModeratorPanel() {
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Panel de Moderador</h1>
+<div className="min-h-screen py-8 px-4" style={{ backgroundColor: '#fff7db' }}>
+    <div className="max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4 font-gamer">Panel de Moderador</h1>
 
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-4 flex-col sm:flex-row">
         <input
           type="text"
           value={newPrediction}
           onChange={(e) => setNewPrediction(e.target.value)}
-          className="border p-2 w-full"
+          className="border p-2 flex-1"
           placeholder="Agregar nueva predicción"
         />
         <select
@@ -77,7 +78,7 @@ export default function ModeratorPanel() {
             setNewPrediction('');
             setNewPoints(1);
           }}
-          className="bg-blue-600 text-white px-4 rounded"
+          className="bg-[#3aae5f] hover:bg-green-700 text-white px-4 py-2 rounded whitespace-nowrap"
         >
           Agregar
         </button>
@@ -121,7 +122,7 @@ export default function ModeratorPanel() {
         ))}
       </ul>
 
-      <h2 className="text-xl font-semibold mb-2">Apuestas acertadas por jugadores</h2>
+      <h2 className="text-xl font-semibold mb-2 font-gamer">Apuestas acertadas por jugadores</h2>
       <ul className="space-y-2">
         {players.map((p, i) => {
           const aciertos = p.selected.filter((idx) => predictions[idx]?.correct);
@@ -138,14 +139,14 @@ export default function ModeratorPanel() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-red-600 mt-1">No acertó ninguna predicción.</p>
+                <p className="text-sm text-red-600 mt-1 font-gamer">No acertó ninguna predicción.</p>
               )}
             </li>
           );
         })}
       </ul>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">Leaderboard</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2 font-gamer">Leaderboard</h2>
       <ul className="space-y-1">
         {Object.entries(scores)
           .sort(([, a], [, b]) => b - a)
@@ -170,6 +171,7 @@ export default function ModeratorPanel() {
       >
         Reiniciar Ronda
       </button>
+    </div>
     </div>
   );
 }

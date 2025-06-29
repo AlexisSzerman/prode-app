@@ -5,7 +5,12 @@ export default {
     './src/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        retro: ['"VT323"', 'monospace'],
+        gamer: ['"Press Start 2P"', 'monospace'],
+      },
+    },
   },
   plugins: [],
 };
