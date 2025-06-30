@@ -4,17 +4,18 @@ import { useGame } from '../context/GameContext';
 const ADMIN_PASSWORD = 'admin123';
 
 export default function ModeratorPanel() {
-  const {
-    predictions,
-    addPrediction,
-    toggleCorrect,
-    updatePredictionPoints,
-    players,
-    scores,
-    resetRound,
-    removePrediction,
-    finishGame,
-  } = useGame();
+const {
+  predictions,
+  addPrediction,
+  toggleCorrect,
+  updatePredictionPoints,
+  players,
+  scores,
+  resetRound,
+  removePrediction,
+  finishGame,
+  gameFinished,
+} = useGame();
 
   const [newPrediction, setNewPrediction] = useState('');
   const [newPoints, setNewPoints] = useState(1);
@@ -54,7 +55,8 @@ export default function ModeratorPanel() {
   return (
   <div className="min-h-screen py-8 px-4" style={{ backgroundColor: '#fff7db' }}>
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4 font-gamer">Panel de Moderador</h1>
+
+  <h1 className="text-2xl font-bold mb-4 font-gamer">Panel de Moderador</h1>
 
       <div className="flex gap-2 mb-4 flex-col sm:flex-row">
         <input
@@ -92,14 +94,14 @@ export default function ModeratorPanel() {
             className={`p-2 border rounded flex justify-between items-center ${p.correct ? 'bg-green-100' : ''}`}
           >
             <span>
-              {p.text} <span className="text-xs text-gray-500">({p.points || 1} pts)</span>
+              {p.text} <span className="text-lg text-gray-500">({p.points || 1} pts)</span>
             </span>
             <div className="flex items-center gap-2">
               {!p.correct && (
                 <select
                   value={p.points || 1}
                   onChange={e => updatePredictionPoints(i, Number(e.target.value))}
-                  className="border p-1 rounded text-xs"
+                  className="border p-1 rounded text-lg"
                 >
                   {[1, 2, 3, 4, 5].map(val => (
                     <option key={val} value={val}>{val} punto{val > 1 ? 's' : ''}</option>
@@ -124,7 +126,7 @@ export default function ModeratorPanel() {
       </ul>
 
       <h2 className="text-xl font-semibold mb-2 font-gamer">Apuestas acertadas</h2>
-      <ul className="space-y-2">
+      <ul className="space-y-2 text-xl">
         {players.map((p, i) => {
           const aciertos = p.selected.filter((idx) => predictions[idx]?.correct);
           return (
@@ -135,7 +137,7 @@ export default function ModeratorPanel() {
                   {aciertos.map((idx) => (
                     <li key={idx}>
                       {predictions[idx]?.text}
-                      <span className="text-xs text-gray-500"> ({predictions[idx]?.points || 1} pts)</span>
+                      <span className="text-lg text-gray-500"> ({predictions[idx]?.points || 1} pts)</span>
                     </li>
                   ))}
                 </ul>
@@ -155,7 +157,7 @@ export default function ModeratorPanel() {
             const medals = ['🥇', '🥈', '🥉'];
             const bgColor = idx === 0 ? 'bg-yellow-100' : idx === 1 ? 'bg-gray-200' : idx === 2 ? 'bg-orange-100' : '';
             return (
-              <li key={nick} className={`border p-2 rounded flex justify-between items-center ${bgColor}`}>
+              <li key={nick} className={`text-lg border p-2 rounded flex justify-between items-center ${bgColor}`}>
                 <div className="flex items-center gap-2">
                   {medals[idx] && <span>{medals[idx]}</span>}
                   <span>{nick}</span>
@@ -175,11 +177,16 @@ export default function ModeratorPanel() {
         </button>
         <button
           onClick={() => finishGame()}
-          className="bg-black text-white px-4 py-2 rounded"
+          className="bg-[#1e2c45] hover:bg-[#263956] text-white px-4 py-2 rounded"
         >
           Finalizar Partida
         </button>
       </div>
+        {gameFinished && (
+    <div className="mb-4 m-4 p-4 bg-red-200 border border-red-400 text-red-800 rounded font-bold font-gamer text-center">
+      🚨 GAME OVER: La partida ha finalizado 🚨
+    </div>
+  )}
     </div>
   </div>
 );

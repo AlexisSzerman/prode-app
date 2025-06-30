@@ -123,7 +123,7 @@ export default function PlayerView({ nickname }) {
 
           return (
             <div className="flex flex-col items-center py-8">
-              <p className="text-3xl font-gamer text-red-600 mb-4">GAME OVER</p>
+              <p className="text-3xl font-gamer text-red-600 mb-4 blink">GAME OVER</p>
               {winnerName && (
                 <p className="text-lg font-semibold text-green-700">
                   🏆 Ganador: {winnerName} ({winnerScore} pts)
