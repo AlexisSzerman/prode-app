@@ -32,7 +32,7 @@ const {
           value={password}
           onChange={e => setPassword(e.target.value)}
           placeholder="Contraseña"
-          className="border p-2 mb-4 rounded"
+          className="border p-2 mb-4 rounded text-xl"
         />
         <button
           onClick={() => {
@@ -47,7 +47,7 @@ const {
         >
           Entrar
         </button>
-        {error && <div className="text-red-600">{error}</div>}
+        {error && <div className="text-red-600 text-xl">{error}</div>}
       </div>
     );
   }
@@ -63,13 +63,13 @@ const {
           type="text"
           value={newPrediction}
           onChange={(e) => setNewPrediction(e.target.value)}
-          className="border p-2 flex-1"
+          className="border p-2 flex-1 text-xl"
           placeholder="Agregar nueva predicción"
         />
         <select
           value={newPoints}
           onChange={e => setNewPoints(Number(e.target.value))}
-          className="border p-2 rounded"
+          className="border p-2 text-lgrounded"
         >
           {[1, 2, 3, 4, 5].map(p => (
             <option key={p} value={p}>{p} punto{p > 1 ? 's' : ''}</option>
@@ -81,20 +81,20 @@ const {
             setNewPrediction('');
             setNewPoints(1);
           }}
-          className="bg-[#3aae5f] hover:bg-green-700 text-white px-4 py-2 rounded whitespace-nowrap"
+          className="bg-[#3aae5f] hover:bg-green-700 text-white text-xl px-4 py-2 rounded whitespace-nowrap"
         >
           Agregar
         </button>
       </div>
 
-      <ul className="space-y-2 mb-6">
+      <ul className="space-y-2 mb-6 text-2xl">
         {predictions.map((p, i) => (
           <li
             key={i}
             className={`p-2 border rounded flex justify-between items-center ${p.correct ? 'bg-green-100' : ''}`}
           >
             <span>
-              {p.text} <span className="text-lg text-gray-500">({p.points || 1} pts)</span>
+              {p.text} <span className="text-2xl text-gray-500">({p.points || 1} pts)</span>
             </span>
             <div className="flex items-center gap-2">
               {!p.correct && (
@@ -110,13 +110,13 @@ const {
               )}
               <button
                 onClick={() => toggleCorrect(i)}
-                className="text-sm bg-green-500 text-white px-2 py-1 rounded"
+                className=" bg-green-500 text-white px-2 py-1 rounded text-lg"
               >
                 {p.correct ? '✓ Correcta' : 'Marcar'}
               </button>
               <button
                 onClick={() => removePrediction(i)}
-                className="text-sm bg-red-500 text-white px-2 py-1 rounded"
+                className=" bg-red-500 text-white px-2 py-1 rounded text-lg"
               >
                 Eliminar
               </button>
@@ -126,11 +126,11 @@ const {
       </ul>
 
       <h2 className="text-xl font-semibold mb-2 font-gamer">Apuestas acertadas</h2>
-      <ul className="space-y-2 text-xl">
+      <ul className="space-y-2  text-xl">
         {players.map((p, i) => {
           const aciertos = p.selected.filter((idx) => predictions[idx]?.correct);
           return (
-            <li key={i} className="border p-2 rounded">
+            <li key={i} className="border p-2 rounded text-2xl">
               <strong>{p.nickname}</strong>
               {aciertos.length > 0 ? (
                 <ul className="ml-4 list-disc">

@@ -76,7 +76,7 @@ export default function PlayerView({ nickname }) {
                   {acertadas.map((i) => (
                     <li
                       key={i}
-                      className="p-2 border rounded flex justify-between items-center bg-green-50"
+                      className="p-2 border rounded flex justify-between items-center text-xl bg-green-50"
                     >
                       <span>
                         {predictions[i].text}{' '}
@@ -91,8 +91,8 @@ export default function PlayerView({ nickname }) {
                   ))}
                 </ul>
 
-                <h2 className="text-xl font-semibold mt-6 mb-2">Posiciones</h2>
-                <ul className="space-y-1">
+                <h2 className="text-xl font-semibold font-gamer mt-6 mb-2">Posiciones</h2>
+                <ul className="space-y-1 text-2xl">
                   {sortedScores.map(([nick, score], idx) => {
                     const medals = ['🥇', '🥈', '🥉'];
                     const bgColor =
@@ -106,7 +106,7 @@ export default function PlayerView({ nickname }) {
                     return (
                       <li
                         key={nick}
-                        className={`border p-2 rounded flex justify-between items-center ${bgColor}`}
+                        className={`border p-2 rounded flex text-xl justify-between items-center ${bgColor}`}
                       >
                         <div className="flex items-center gap-2">
                           {medals[idx] && <span>{medals[idx]}</span>}
@@ -125,7 +125,7 @@ export default function PlayerView({ nickname }) {
             <div className="flex flex-col items-center py-8">
               <p className="text-3xl font-gamer text-red-600 mb-4 blink">GAME OVER</p>
               {winnerName && (
-                <p className="text-lg font-semibold text-green-700">
+                <p className="text-xl font-gamer font-semibold text-green-700">
                   🏆 Ganador: {winnerName} ({winnerScore} pts)
                 </p>
               )}
@@ -134,14 +134,14 @@ export default function PlayerView({ nickname }) {
         })()
       ) : (
         <>
-          <p className="mb-2">Selecciona hasta {MAX_SELECTIONS} predicciones que creés que van a suceder:</p>
-          <p className="text-sm text-gray-600 mb-2">
+          <p className="mb-2 text-3xl">Selecciona hasta {MAX_SELECTIONS} predicciones que creés que van a suceder:</p>
+          <p className="text-xl text-gray-600 mb-2">
             Elegiste {selected.length} de {MAX_SELECTIONS} predicciones
           </p>
-          <ul className="space-y-2">
+          <ul className="space-y-2 text-2xl">
             {predictions.map((p, i) => (
-              <li key={i} className="p-2 border rounded flex justify-between items-center">
-                <span>{p.text} <span className="text-xs text-gray-500">({p.points || 1} pts)</span></span>
+              <li key={i} className="p-2 border rounded flex justify-between items-center text-2xl">
+                <span>{p.text} <span className="text-2xl text-gray-500">({p.points || 1} pts)</span></span>
                 <input
                   type="checkbox"
                   checked={selected.includes(i)}
@@ -153,7 +153,7 @@ export default function PlayerView({ nickname }) {
           <button
             onClick={confirm}
             disabled={selected.length === 0}
-            className={`mt-4 px-4 py-2 rounded text-white ${
+            className={`mt-4 px-4 py-2 text-2xl rounded text-white ${
               selected.length === 0
                 ? 'bg-gray-400 cursor-not-allowed'
                 : ' bg-[#1e2c45] hover:bg-[#263956]'
