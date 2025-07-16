@@ -95,43 +95,51 @@ export default function ModeratorPanel() {
           </button>
         </div>
 
-        <ul className="space-y-2 mb-6 text-2xl">
-          {predictions.map((p, i) => (
-            <li
-              key={i}
-              className={`p-2 border rounded flex justify-between items-center ${p.correct ? 'bg-green-100' : ''}`}
+<ul className="space-y-2 mb-6 text-xl">
+  {predictions.map((p, i) => (
+    <li
+      key={i}
+      className={`p-3 border rounded ${p.correct ? 'bg-green-100' : 'bg-white'}`}
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        {/* Texto de la predicción */}
+        <span className="flex-1 text-left">
+          {p.text}{' '}
+          <span className="text-gray-500 text-lg">({p.points || 1} pts)</span>
+        </span>
+
+        {/* Controles */}
+        <div className="flex flex-wrap gap-2 items-center justify-end">
+          {!p.correct && (
+            <select
+              value={p.points || 1}
+              onChange={e => updatePredictionPoints(i, Number(e.target.value))}
+              className="border p-1 rounded text-base"
             >
-              <span>
-                {p.text} <span className="text-2xl text-gray-500">({p.points || 1} pts)</span>
-              </span>
-              <div className="flex items-center gap-2">
-                {!p.correct && (
-                  <select
-                    value={p.points || 1}
-                    onChange={e => updatePredictionPoints(i, Number(e.target.value))}
-                    className="border p-1 rounded text-lg"
-                  >
-                    {[1, 2, 3, 4, 5].map(val => (
-                      <option key={val} value={val}>{val} punto{val > 1 ? 's' : ''}</option>
-                    ))}
-                  </select>
-                )}
-                <button
-                  onClick={() => toggleCorrect(i)}
-                  className=" bg-green-500 text-white px-2 py-1 rounded text-lg"
-                >
-                  {p.correct ? '✓ Correcta' : 'Marcar'}
-                </button>
-                <button
-                  onClick={() => removePrediction(i)}
-                  className=" bg-red-500 text-white px-2 py-1 rounded text-lg"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+              {[1, 2, 3, 4, 5].map(val => (
+                <option key={val} value={val}>{val} punto{val > 1 ? 's' : ''}</option>
+              ))}
+            </select>
+          )}
+
+          <button
+            onClick={() => toggleCorrect(i)}
+            className="bg-green-500 text-white px-3 py-1 rounded text-base"
+          >
+            {p.correct ? '✓ Correcta' : 'Marcar'}
+          </button>
+
+          <button
+            onClick={() => removePrediction(i)}
+            className="bg-red-500 text-white px-3 py-1 rounded text-base"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </li>
+  ))}
+</ul>
 
         <h2 className="text-xl font-semibold mb-2 font-gamer">Apuestas acertadas</h2>
         <ul className="space-y-2 text-xl">
