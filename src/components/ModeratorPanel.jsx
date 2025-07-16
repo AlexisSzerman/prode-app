@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 
 const ADMIN_PASSWORD = 'admin123';
@@ -20,10 +20,16 @@ export default function ModeratorPanel() {
   const [newPrediction, setNewPrediction] = useState('');
   const [newPoints, setNewPoints] = useState(1);
   const [password, setPassword] = useState('');
-  const [authenticated, setAuthenticated] = useState(
-  localStorage.getItem('moderatorAuth') === 'true'
-);
+  const [authenticated, setAuthenticated] = useState(false);
   const [error, setError] = useState('');
+
+  // Cargar estado de autenticación al montar
+  useEffect(() => {
+    const savedAuth = localStorage.getItem('moderatorAuth');
+    if (savedAuth === 'true') {
+      setAuthenticated(true);
+    }
+  }, []);
 
   if (!authenticated) {
     return (
@@ -41,7 +47,7 @@ export default function ModeratorPanel() {
             if (password === ADMIN_PASSWORD) {
               setAuthenticated(true);
               setError('');
-              localStorage.setItem('moderatorAuth', 'true'); 
+              localStorage.setItem('moderatorAuth', 'true'); // Guardar autenticación
             } else {
               setError('Contraseña incorrecta');
             }
@@ -196,7 +202,7 @@ export default function ModeratorPanel() {
           onClick={() => {
             localStorage.removeItem('nickname');
             localStorage.removeItem('role');
-            localStorage.removeItem('moderatorAuth');
+            localStorage.removeItem('moderatorAuth'); // limpiar también esta
             window.location.reload();
           }}
           className="mt-6 bg-gray-400 hover:bg-gray-600 text-white px-4 py-2 rounded"

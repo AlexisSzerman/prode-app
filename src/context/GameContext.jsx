@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
@@ -43,16 +43,16 @@ export function GameProvider({ children }) {
   useEffect(() => {
     const newScores = calculateScores(predictions, players);
     setScores(newScores);
-    updateGameData({ predictions, players, scores: newScores, gameFinished });
+    updateGameData({ predictions, players, scores: newScores, gameFinished, });
     // eslint-disable-next-line
   }, [predictions, players]);
 
-  const updateGameData = async (newData) => {
-    await setDoc(GAME_DOC, {
-      ...newData,
-      secretKey: SECRET_KEY,
-    });
-  };
+const updateGameData = async (newData) => {
+  await setDoc(GAME_DOC, {
+    ...newData,
+    secretKey: SECRET_KEY,
+  }, { merge: true }); // ← esta línea es el cambio clave
+};
 
   const addPrediction = async (text, points = 1) => {
     const updated = [...predictions, { text: text.trim(), correct: false, points }];
