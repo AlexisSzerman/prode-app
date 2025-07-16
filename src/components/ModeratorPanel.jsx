@@ -20,7 +20,9 @@ export default function ModeratorPanel() {
   const [newPrediction, setNewPrediction] = useState('');
   const [newPoints, setNewPoints] = useState(1);
   const [password, setPassword] = useState('');
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(
+  localStorage.getItem('moderatorAuth') === 'true'
+);
   const [error, setError] = useState('');
 
   if (!authenticated) {
@@ -39,6 +41,7 @@ export default function ModeratorPanel() {
             if (password === ADMIN_PASSWORD) {
               setAuthenticated(true);
               setError('');
+              localStorage.setItem('moderatorAuth', 'true'); 
             } else {
               setError('Contraseña incorrecta');
             }
@@ -193,6 +196,7 @@ export default function ModeratorPanel() {
           onClick={() => {
             localStorage.removeItem('nickname');
             localStorage.removeItem('role');
+            localStorage.removeItem('moderatorAuth');
             window.location.reload();
           }}
           className="mt-6 bg-gray-400 hover:bg-gray-600 text-white px-4 py-2 rounded"
