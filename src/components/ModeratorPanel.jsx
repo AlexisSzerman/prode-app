@@ -4,18 +4,18 @@ import { useGame } from '../context/GameContext';
 const ADMIN_PASSWORD = 'admin123';
 
 export default function ModeratorPanel() {
-const {
-  predictions,
-  addPrediction,
-  toggleCorrect,
-  updatePredictionPoints,
-  players,
-  scores,
-  resetRound,
-  removePrediction,
-  finishGame,
-  gameFinished,
-} = useGame();
+  const {
+    predictions,
+    addPrediction,
+    toggleCorrect,
+    updatePredictionPoints,
+    players,
+    scores,
+    resetRound,
+    removePrediction,
+    finishGame,
+    gameFinished,
+  } = useGame();
 
   const [newPrediction, setNewPrediction] = useState('');
   const [newPoints, setNewPoints] = useState(1);
@@ -53,141 +53,153 @@ const {
   }
 
   return (
-  <div className="min-h-screen py-8 px-4" style={{ backgroundColor: '#fff7db' }}>
-    <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen py-8 px-4" style={{ backgroundColor: '#fff7db' }}>
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-2xl font-bold mb-4 font-gamer">Panel de Moderador</h1>
 
-  <h1 className="text-2xl font-bold mb-4 font-gamer">Panel de Moderador</h1>
-
-      <div className="flex gap-2 mb-4 flex-col sm:flex-row">
-        <input
-          type="text"
-          value={newPrediction}
-          onChange={(e) => setNewPrediction(e.target.value)}
-          className="border p-2 flex-1 text-xl"
-          placeholder="Agregar nueva predicción"
-        />
-        <select
-          value={newPoints}
-          onChange={e => setNewPoints(Number(e.target.value))}
-          className="border p-2 text-lgrounded"
-        >
-          {[1, 2, 3, 4, 5].map(p => (
-            <option key={p} value={p}>{p} punto{p > 1 ? 's' : ''}</option>
-          ))}
-        </select>
-        <button
-          onClick={() => {
-            addPrediction(newPrediction, newPoints);
-            setNewPrediction('');
-            setNewPoints(1);
-          }}
-          className="bg-[#3aae5f] hover:bg-green-700 text-white text-xl px-4 py-2 rounded whitespace-nowrap"
-        >
-          Agregar
-        </button>
-      </div>
-
-      <ul className="space-y-2 mb-6 text-2xl">
-        {predictions.map((p, i) => (
-          <li
-            key={i}
-            className={`p-2 border rounded flex justify-between items-center ${p.correct ? 'bg-green-100' : ''}`}
+        <div className="flex gap-2 mb-4 flex-col sm:flex-row">
+          <input
+            type="text"
+            value={newPrediction}
+            onChange={(e) => setNewPrediction(e.target.value)}
+            className="border p-2 flex-1 text-xl"
+            placeholder="Agregar nueva predicción"
+          />
+          <select
+            value={newPoints}
+            onChange={e => setNewPoints(Number(e.target.value))}
+            className="border p-2 text-lgrounded"
           >
-            <span>
-              {p.text} <span className="text-2xl text-gray-500">({p.points || 1} pts)</span>
-            </span>
-            <div className="flex items-center gap-2">
-              {!p.correct && (
-                <select
-                  value={p.points || 1}
-                  onChange={e => updatePredictionPoints(i, Number(e.target.value))}
-                  className="border p-1 rounded text-lg"
+            {[1, 2, 3, 4, 5].map(p => (
+              <option key={p} value={p}>{p} punto{p > 1 ? 's' : ''}</option>
+            ))}
+          </select>
+          <button
+            onClick={() => {
+              addPrediction(newPrediction, newPoints);
+              setNewPrediction('');
+              setNewPoints(1);
+            }}
+            className="bg-[#3aae5f] hover:bg-green-700 text-white text-xl px-4 py-2 rounded whitespace-nowrap"
+          >
+            Agregar
+          </button>
+        </div>
+
+        <ul className="space-y-2 mb-6 text-2xl">
+          {predictions.map((p, i) => (
+            <li
+              key={i}
+              className={`p-2 border rounded flex justify-between items-center ${p.correct ? 'bg-green-100' : ''}`}
+            >
+              <span>
+                {p.text} <span className="text-2xl text-gray-500">({p.points || 1} pts)</span>
+              </span>
+              <div className="flex items-center gap-2">
+                {!p.correct && (
+                  <select
+                    value={p.points || 1}
+                    onChange={e => updatePredictionPoints(i, Number(e.target.value))}
+                    className="border p-1 rounded text-lg"
+                  >
+                    {[1, 2, 3, 4, 5].map(val => (
+                      <option key={val} value={val}>{val} punto{val > 1 ? 's' : ''}</option>
+                    ))}
+                  </select>
+                )}
+                <button
+                  onClick={() => toggleCorrect(i)}
+                  className=" bg-green-500 text-white px-2 py-1 rounded text-lg"
                 >
-                  {[1, 2, 3, 4, 5].map(val => (
-                    <option key={val} value={val}>{val} punto{val > 1 ? 's' : ''}</option>
-                  ))}
-                </select>
-              )}
-              <button
-                onClick={() => toggleCorrect(i)}
-                className=" bg-green-500 text-white px-2 py-1 rounded text-lg"
-              >
-                {p.correct ? '✓ Correcta' : 'Marcar'}
-              </button>
-              <button
-                onClick={() => removePrediction(i)}
-                className=" bg-red-500 text-white px-2 py-1 rounded text-lg"
-              >
-                Eliminar
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      <h2 className="text-xl font-semibold mb-2 font-gamer">Apuestas acertadas</h2>
-      <ul className="space-y-2  text-xl">
-        {players.map((p, i) => {
-          const aciertos = p.selected.filter((idx) => predictions[idx]?.correct);
-          return (
-            <li key={i} className="border p-2 rounded text-2xl">
-              <strong>{p.nickname}</strong>
-              {aciertos.length > 0 ? (
-                <ul className="ml-4 list-disc">
-                  {aciertos.map((idx) => (
-                    <li key={idx}>
-                      {predictions[idx]?.text}
-                      <span className="text-lg text-gray-500"> ({predictions[idx]?.points || 1} pts)</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-red-600 mt-1 font-gamer">No acertó ninguna predicción.</p>
-              )}
+                  {p.correct ? '✓ Correcta' : 'Marcar'}
+                </button>
+                <button
+                  onClick={() => removePrediction(i)}
+                  className=" bg-red-500 text-white px-2 py-1 rounded text-lg"
+                >
+                  Eliminar
+                </button>
+              </div>
             </li>
-          );
-        })}
-      </ul>
+          ))}
+        </ul>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2 font-gamer">Posiciones</h2>
-      <ul className="space-y-1">
-        {Object.entries(scores)
-          .sort(([, a], [, b]) => b - a)
-          .map(([nick, score], idx) => {
-            const medals = ['🥇', '🥈', '🥉'];
-            const bgColor = idx === 0 ? 'bg-yellow-100' : idx === 1 ? 'bg-gray-200' : idx === 2 ? 'bg-orange-100' : '';
+        <h2 className="text-xl font-semibold mb-2 font-gamer">Apuestas acertadas</h2>
+        <ul className="space-y-2 text-xl">
+          {players.map((p, i) => {
+            const aciertos = p.selected.filter((idx) => predictions[idx]?.correct);
             return (
-              <li key={nick} className={`text-lg border p-2 rounded flex justify-between items-center ${bgColor}`}>
-                <div className="flex items-center gap-2">
-                  {medals[idx] && <span>{medals[idx]}</span>}
-                  <span>{nick}</span>
-                </div>
-                <span className="font-bold">{score} pts</span>
+              <li key={i} className="border p-2 rounded text-2xl">
+                <strong>{p.nickname}</strong>
+                {aciertos.length > 0 ? (
+                  <ul className="ml-4 list-disc">
+                    {aciertos.map((idx) => (
+                      <li key={idx}>
+                        {predictions[idx]?.text}
+                        <span className="text-lg text-gray-500"> ({predictions[idx]?.points || 1} pts)</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-red-600 mt-1 font-gamer">No acertó ninguna predicción.</p>
+                )}
               </li>
             );
           })}
-      </ul>
+        </ul>
 
-      <div className="mt-6 flex flex-col sm:flex-row gap-2">
+        <h2 className="text-xl font-semibold mt-6 mb-2 font-gamer">Posiciones</h2>
+        <ul className="space-y-1">
+          {Object.entries(scores)
+            .sort(([, a], [, b]) => b - a)
+            .map(([nick, score], idx) => {
+              const medals = ['🥇', '🥈', '🥉'];
+              const bgColor = idx === 0 ? 'bg-yellow-100' : idx === 1 ? 'bg-gray-200' : idx === 2 ? 'bg-orange-100' : '';
+              return (
+                <li key={nick} className={`text-lg border p-2 rounded flex justify-between items-center ${bgColor}`}>
+                  <div className="flex items-center gap-2">
+                    {medals[idx] && <span>{medals[idx]}</span>}
+                    <span>{nick}</span>
+                  </div>
+                  <span className="font-bold">{score} pts</span>
+                </li>
+              );
+            })}
+        </ul>
+
+        <div className="mt-6 flex flex-col sm:flex-row gap-2">
+          <button
+            onClick={resetRound}
+            className="bg-red-600 text-white px-4 py-2 rounded"
+          >
+            Reiniciar Puntajes
+          </button>
+          <button
+            onClick={() => finishGame()}
+            className="bg-[#1e2c45] hover:bg-[#263956] text-white px-4 py-2 rounded"
+          >
+            Finalizar Partida
+          </button>
+        </div>
+
+        {gameFinished && (
+          <div className="mb-4 m-4 p-4 bg-red-200 border border-red-400 text-red-800 rounded font-bold font-gamer text-center">
+            🚨 GAME OVER: La partida ha finalizado 🚨
+          </div>
+        )}
+
+        {/* Botón salir */}
         <button
-          onClick={resetRound}
-          className="bg-red-600 text-white px-4 py-2 rounded"
+          onClick={() => {
+            localStorage.removeItem('nickname');
+            localStorage.removeItem('role');
+            window.location.reload();
+          }}
+          className="mt-6 bg-gray-400 hover:bg-gray-600 text-white px-4 py-2 rounded"
         >
-          Reiniciar Puntajes
-        </button>
-        <button
-          onClick={() => finishGame()}
-          className="bg-[#1e2c45] hover:bg-[#263956] text-white px-4 py-2 rounded"
-        >
-          Finalizar Partida
+          Salir
         </button>
       </div>
-        {gameFinished && (
-    <div className="mb-4 m-4 p-4 bg-red-200 border border-red-400 text-red-800 rounded font-bold font-gamer text-center">
-      🚨 GAME OVER: La partida ha finalizado 🚨
     </div>
-  )}
-    </div>
-  </div>
-);
+  );
 }

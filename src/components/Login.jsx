@@ -34,8 +34,12 @@ export default function Login({ onLogin }) {
           />
 
           <button
-            onClick={() => onLogin("player", nickname)}
-            className="w-full  bg-[#1e2c45] hover:bg-[#263956] text-white font-semibold py-2 rounded transition font-gamer"
+            onClick={() => {
+              localStorage.setItem("nickname", nickname);
+              localStorage.setItem("role", "player");
+              onLogin("player", nickname);
+            }}
+            className="w-full bg-[#1e2c45] hover:bg-[#263956] text-white font-semibold py-2 rounded transition font-gamer"
           >
             Jugar
           </button>
@@ -47,7 +51,11 @@ export default function Login({ onLogin }) {
             }}
           />
           <button
-            onClick={() => onLogin("moderator", nickname)}
+            onClick={() => {
+              localStorage.setItem("nickname", nickname);
+              localStorage.setItem("role", "moderator");
+              onLogin("moderator", nickname);
+            }}
             className="w-full bg-[#3aae5f] hover:bg-green-700 text-white font-semibold py-2 rounded transition font-gamer"
           >
             Moderador
